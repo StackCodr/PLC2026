@@ -1,3 +1,5 @@
+raise RuntimeError("This file is disabled and should not be executed.")
+
 """
 # ---- PYTHON LESSON -----
 
@@ -65,8 +67,9 @@
     len(): Built-in function can be used on lists too, more information in 1.2.1, it identifies number of elements in list
 
 # (1.3.2) Lists (Indexing items)
+    Introduces concept of "mutating an object", which means changing its contents or internal state without creating a new object.
     You can assign a value at specified index: `variable_name[index] = 64`, the new value at index is 64.
-    list_name.append(value): A built-in function that adds items to the end of list_name
+    list_name.append(value): A built-in function that adds items to the end of list_name.
     range(): Built-in function that generates a sequence of values. Can be used in list() function to create a list with values.
         - 1 parameter: range(4), number starts from 0 (including) and ends at 4 (excluding)
         - 2 parameters: range(2,4), number starts from 2 (including) and ends at 4 (excluding)
@@ -131,14 +134,15 @@
     Strategy 2: Create new collection
         `collection_users = {} # Use for statement techniques in 1.4.2 to iterate over original collection, and use it to populate this new collection `
 
-# (1.4.3) Control flows (break, continue, pass statements)
+# (1.4.3) Control flows (break, continue, pass, return statements)
     break statement: breaks out of innermost for or while loop
         - if no break statement exists in for loop, it enters else clause of the outer loop or block when loop finishes final iteration
         - if no break statement exists in while loop, it enters else clause of the outer loop or block when loop condition becomes false
     continue statement: continues into next iteration of innermost for or while loop
     pass statement: does nothing, used when you want program to take no action and statement required syntatically e.g. while loop or new classes or new functions (optional to define later)
         - Alternatively, any constant expressions can be used as placeholder ("hello", `...`, 5, True): whose value is fixed and does not depend on variables.
-
+    return statement: returns a value from a function (before its destroyed, explained in 1.5.2) to where it was called. no returns defined or a return without an expression still returns none implicitly. 
+        
 # (1.4.4) Control flows (match statements part 1)
     match statement takes an expression and compares the value to different patterns outlined in case blocks. First pattern that matches gets executed, if no case matches, none is executed.
     
@@ -206,7 +210,53 @@
     - __match_args__ tells Python what attribute name correspond to which positional argument. Python checks if object has the attributes named in __match_args__ and reads their values.
     Benefits of __match_args__: makes the class pattern shorter
 
-# -- (1.5) SPECIAL PARTS OF PROMPT --
+# -- (1.5) PROMPTS (FUNCTIONS) --
+
+# (1.5.1) Functions (Function Definition)
+    Function definition: A new function is defined using `def` keyword e.g. `def function(a):`
+        - Contains formal parameters (arguments)
+        - First statement of function body can be a string literal for purpose of being a function's documentation string
+    
+# (1.5.2) Functions (Symbol Table)
+    Symbol Table: A data structure (like dictionary) that python uses internally to keep track of variable names and their values
+
+    Symbol Tables are created for different scopes:
+        - Local symbol table: for variables defined inside a function
+        - Enclosing symbol table: for variable in outer functions (a nested function)
+        - Global symbol table: for variables at the top level of your file (your module)
+        - Built-in symbol table: for python's built-in names like len(),print(),range(),input()
+    Variable references looks in the order from top to bottom.
+        
+    More information about functions:
+        - Each function call, including recursive ones gets its own local symbol table - it gets deleted when function finishes running.
+        - Function call with actual parameters (arguments) set, passes a reference to the object, the reference is stored as local variable inside the function
+        - all variable assignments affects only the local variable in the function's scope (its local symbol table) unless made otherwise.
+            = This applies to arguments passed into function call as well, it will only affect local variable and not outer.
+        - `global` keyword used for modifying variables existing globally (global symbol table).
+        - `nonlocal` keyword used for modifying variables in outer function (enclosing symbol table).
+
+            ``` CODE BLOCK ```
+            def outer():
+                x = 10  # variable in outer function
+                def inner():
+                    nonlocal x  # refers to x in the outer (enclosing) function
+                    x = 20      # now modifies outer x instead of creating a new one
+                    print("Inner x:", x)
+                inner()
+                print("Outer x:", x)
+            outer()
+            # both outer() and inner() outputs x = 20.
+
+# (1.5.3) Functions (Accessing Function)
+    Function definitions creates a function object stored in memory (at a location) and it is associated with its name
+        - Accessing function: Other variables can assign function name to them, this makes variable point to same function object in memory (using its name) and the same function through different names
+
+        ``` CODE BLOCK  ```
+        print(fib) # output: <function fib at 10042ed0>
+        f = fib
+        f(100) # outputs: 0 1 1 2 3 5 8 13 21 34 55 89
+
+# -- (1.6) SPECIAL PARTS OF PROMPT --
     ( _ ) Wildcard : has many functionality (see 1.1.3 , 1.4.5, ) COMPLETE THIS SECTION!
     len(): mentioned in 1.2.1 and 1.3.1
     ( * and ** ) Unpacking operator: More on this in (1.4.5). If used in function definition, it will mean to collect all positional arguments into tuple or into key-value dictionary e.g. def function(*args), in this case, tuple within variable args.
